@@ -32,6 +32,24 @@ print(nghb.head(50))
 
 df['last_review'] = pd.to_datetime(df['last_review'])
 
-df['month'] = df['last_review'].dt.month
+df['review_month'] = df['last_review'].dt.month
 
-print(df[['last_review', 'month']])
+print(df.columns)
+
+hostname = 'localhost'
+database = 'AI_Planet'
+username = 'postgres'
+pwd = 'xyz123'
+port_id = '5432'
+
+connection_string = f'postgresql://{username}:{pwd}@{hostname}:{port_id}/{database}'
+engine = create_engine(connection_string)
+
+try:
+    table_name = 'airbnb_listings_transformed'  # Replace with your actual table name
+    df.to_sql(table_name, engine, if_exists='replace', index=False, chunksize=1000, method='multi')
+
+except Exception as error:
+    print(error)
+finally:
+    print('done')

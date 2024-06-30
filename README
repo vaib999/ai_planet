@@ -12,7 +12,7 @@ Build and run Docker Image
 
 1) docker build -t metaflow-app .
 2) docker run -it --rm -e METAFLOW_USER=ai_planet metaflow-app python linear_flow.py show
-![Screenshot](images/docker show.png)
+![Screenshot](images/docker_show.png)
 
 3) docker run -it --rm -e METAFLOW_USER=ai_planet metaflow-app python linear_flow.py run
 

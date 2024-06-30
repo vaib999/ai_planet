@@ -13,7 +13,7 @@ class LinearFlow(FlowSpec):
         self.next(self.get_data_from_db)
 
     @catch(var='load_error')
-    @retry(times=0)
+    @retry(times=2)
     @step
     def get_data_from_db(self):
         self.df = load_data_from_db()
@@ -21,7 +21,7 @@ class LinearFlow(FlowSpec):
         self.next(self.data_transformation)
 
     @catch(var='transformation_error')
-    @retry(times=0)
+    @retry(times=2)
     @step
     def data_transformation(self):
         if self.load_error:
@@ -32,7 +32,7 @@ class LinearFlow(FlowSpec):
         self.next(self.push_data_to_db)
 
     @catch(var='write_error')
-    @retry(times=0)
+    @retry(times=2)
     @step
     def push_data_to_db(self):
         if self.load_error or self.transformation_error:

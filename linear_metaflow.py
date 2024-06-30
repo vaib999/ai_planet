@@ -3,9 +3,8 @@ from load_from_db_and_transformation_of_data import *
 
 @schedule(hourly=True)
 class LinearFlow(FlowSpec):
-      
     """
-    A flow to verify you can run a basic metaflow flow.
+    Linear metaflow pipeline
     """
     
     @step

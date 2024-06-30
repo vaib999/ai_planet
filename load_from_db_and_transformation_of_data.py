@@ -1,6 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 
+# Schema for initial data load
 initial_load_schema = '''
         CREATE TABLE IF NOT EXISTS airbnb_listings (
             id INT PRIMARY KEY,
@@ -22,6 +23,7 @@ initial_load_schema = '''
         )
 '''
 
+# Schema for cleaned and transformed data
 transformed_schema = '''
         CREATE TABLE IF NOT EXISTS airbnb_listings_transformed (
             id INT PRIMARY KEY,
@@ -44,8 +46,13 @@ transformed_schema = '''
         )
 '''
 
+# Connection with
 def establish_connection():
-    hostname = 'host.docker.internal'
+    """
+    Returns connection to postgres database
+    """
+
+    hostname = 'host.docker.internal' # For establishing connection from Docker container to postgres
     # hostname = 'localhost'
     database = 'AI_Planet'
     username = 'postgres'
@@ -58,6 +65,10 @@ def establish_connection():
     return engine
 
 def write_initial_load_data():
+    """
+    Creates table in database if not there and write csv data in the table
+    """
+    
     df = pd.read_csv('AB_NYC_2019.csv')
 
     engine = establish_connection()
@@ -65,17 +76,26 @@ def write_initial_load_data():
     with engine.connect() as connection:
         connection.execute(text(initial_load_schema))
 
-    table_name = 'airbnb_listings'  # Replace with your actual table name
+    # pandas to_sql method uses parameters like chunksize and method so that 
+    # chunks of rows are added in one attempt making write operation more efficient
+    table_name = 'airbnb_listings'
     df.to_sql(table_name, engine, if_exists='append', index=False, chunksize=1000, method='multi')
 
 def load_data_from_db():
-    query = "SELECT * FROM airbnb_listings"  # Adjust your_table_name and query as needed
+    """
+    Read data from database table
+    """
+    query = "SELECT * FROM airbnb_listings" 
 
     df = pd.read_sql(query, establish_connection())
 
     return df
 
 def write_transformed_data_to_db(df):
+    """
+    Creates table in database if not there and write csv data in the table
+    """
+    
     engine = establish_connection()
 
     with engine.connect() as connection:
@@ -85,20 +105,23 @@ def write_transformed_data_to_db(df):
     df.to_sql(table_name, engine, if_exists='append', index=False, chunksize=1000, method='multi')
 
 def transform_data(df):
+    """
+    Transform data like cleaning, manipulation, creation of new columns and much more 
+    """
+
+    # Fill all NA in column in place
     df.fillna({'reviews_per_month':0}, inplace=True)
-    # print(df.reviews_per_month.isnull().sum())
 
+    # Drop all NA rows
     df.dropna(how='any',inplace=True)
-    df.info()
+    # df.info()
 
-    # print(df['last_review'])
-
-    nghb = df.neighbourhood.value_counts()
+    # nghb = df.neighbourhood.value_counts()
     # print(nghb.head(50))
 
+    # Convert last_review to datetime column type
     df['last_review'] = pd.to_datetime(df['last_review'])
+    # Extract Month and create new column for month
     df['review_month'] = df['last_review'].dt.month
-
-    # print(df.columns)
 
     return df

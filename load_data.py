@@ -1,0 +1,3 @@
+from load_from_db_and_transformation_of_data import *
+
+write_initial_load_data()

@@ -1,4 +1,5 @@
 from metaflow import FlowSpec, step
+from load_from_db_and_transformation_of_data import *
 
 class LinearFlow(FlowSpec):
       
@@ -14,19 +15,19 @@ class LinearFlow(FlowSpec):
 
     @step
     def get_data_from_db(self):
+        self.df = load_data_from_db()
         print("Data Fetched")
-        self.input_data = 'Data'
         self.next(self.data_transformation)
 
     @step
     def data_transformation(self):
-        print('the message is: %s' % self.input_data)
-        self.data_transformed = 'Data_transformed'
+        self.transformed_df = transform_data(self.df)
+        print("Data Transformed")
         self.next(self.push_data_to_db)
 
     @step
     def push_data_to_db(self):
-        print('the message is still: %s' % self.data_transformed)
+        write_transformed_data_to_db(self.transformed_df)
         print('Data pushed to DB')
         self.next(self.end)
 

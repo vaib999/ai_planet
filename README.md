@@ -2,7 +2,7 @@ Prerequisite
 
 For initial load of csv file to postgres database
 python run load_data.py 
-
+![Screenshot](images/Postgres_tables.png)
 
 Metaflow DAG overview
 start --> get_data_from_db --> data_transformation --> push_data_to_db --> end
@@ -15,6 +15,7 @@ Build and run Docker Image
 ![Screenshot](images/docker_show.png)
 
 3) docker run -it --rm -e METAFLOW_USER=ai_planet metaflow-app python linear_flow.py run
+![Screenshot](images/docker_run.png)
 
 
 Future Improvements for a Fault-Tolerant Pipeline

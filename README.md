@@ -31,3 +31,5 @@ Future Improvements for a Fault-Tolerant Pipeline
     succeed, mitigating transient failures.
 -   Backups: Regularly create and store copies of data or system components to restore the 
     system to a previous state or switch to an alternative mode in case of failures.
+
+Link to project explanation : https://youtu.be/N9pRWLaNsqU
